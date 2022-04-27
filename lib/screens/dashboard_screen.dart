@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widget/change_theme_button.dart';
+import '../widget/circular_gauge.dart';
 import '../widget/speedgauge.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
@@ -33,8 +34,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: const [
           ChangeThemeButtonWidget(),
         ],
-        toolbarTextStyle: Theme.of(context).textTheme.bodyText1,
-        titleTextStyle: Theme.of(context).textTheme.headline1,
       ),
       body: StreamBuilder(
           stream: _channel.stream,
@@ -43,13 +42,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               final response = jsonDecode(snapshot.data.toString());
               //print(response['SPEED'].toDouble());
               return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: (mediaquery.size.width) * 0.5,
-                    padding: const EdgeInsets.all(10),
-                    height: (mediaquery.size.height) * 0.9,
+                  CircularGauge(
+                    value: response['BATTERY'].toDouble(),
+                  ),
+                  SizedBox(
+                    width: (mediaquery.size.width) * 0.4,
+                    height: (mediaquery.size.height) * 1,
                     child: SpeedometerView(
                       unitOfMeasurementTextStyle: TextStyle(
                         color: Theme.of(context).textTheme.headline2?.color,
@@ -62,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Theme.of(context).textTheme.bodyText1?.fontSize,
                       ),
                       divisionCircleColors: Theme.of(context).primaryColor,
-                      innerCirclePadding: 16,
+                      innerCirclePadding: 0,
                       speedTextStyle: TextStyle(
                         color: Theme.of(context).textTheme.headline1?.color,
                         fontSize:
@@ -88,6 +89,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Colors.red,
                         Colors.red,
                         Colors.red,
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: (mediaquery.size.width) * 0.21,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          'Fault',
+                          style: Theme.of(context).textTheme.subtitle1?.apply(
+                                color: response['FAULT_VALUE'] == 1
+                                    ? Colors.red
+                                    : Colors.grey[600],
+                              ),
+                        ),
+                        Icon(
+                          Icons.battery_alert_outlined,
+                          color: response['FAULT_VALUE'] == 1
+                              ? Colors.red
+                              : Colors.grey[600],
+                          size: 40,
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              'Average Speed',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            Text(
+                              '40 Kmph',
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                            Text(
+                              'Total Distance',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            Text(
+                              '${response['TOTAL_DISTANCE']} Kms',
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),

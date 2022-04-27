@@ -27,6 +27,14 @@ class MyThemes {
         color: Colors.white,
         fontSize: 16,
       ),
+      bodyText2: TextStyle(
+        color: Colors.white70,
+        fontSize: 16,
+      ),
+      subtitle1: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+      ),
     ),
     iconTheme: IconThemeData(
       color: Colors.purple.shade200,
@@ -49,6 +57,14 @@ class MyThemes {
       bodyText1: TextStyle(
         color: Colors.black,
         fontSize: 16,
+      ),
+      bodyText2: TextStyle(
+        color: Colors.black87,
+        fontSize: 16,
+      ),
+      subtitle1: TextStyle(
+        color: Colors.black,
+        fontSize: 20,
       ),
     ),
     iconTheme: const IconThemeData(
