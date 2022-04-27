@@ -28,38 +28,38 @@ class SpeedometerView extends StatefulWidget {
   final int fractionDigits;
 
   //final Widget child;
-  const SpeedometerView({
-    Key? key,
-    this.speed = 0,
-    this.speedTextStyle = const TextStyle(
-      color: Colors.black,
-      fontSize: 60,
-      fontWeight: FontWeight.bold,
-    ),
-    this.unitOfMeasurement = 'Km/Hr',
-    this.unitOfMeasurementTextStyle = const TextStyle(
-      color: Colors.black,
-      fontSize: 30,
-      fontWeight: FontWeight.w600,
-    ),
-    this.alertSpeedArray = const [],
-    this.alertColorArray = const [],
-    this.minSpeed = 0,
-    this.maxSpeed = 120,
-    this.minMaxTextStyle = const TextStyle(
-      color: Colors.black,
-      fontSize: 20,
-    ),
-    this.gaugeWidth = 10,
-    this.baseGaugeColor = Colors.transparent,
-    this.inactiveGaugeColor = Colors.black87,
-    this.activeGaugeColor = Colors.green,
-    this.innerCirclePadding = 30,
-    this.divisionCircleColors = Colors.black,
-    this.subDivisionCircleColors = Colors.black,
-    this.duration = const Duration(milliseconds: 400),
-    this.fractionDigits = 0,
-  }) : super(key: key);
+  const SpeedometerView(
+      {this.speed = 0,
+      this.speedTextStyle = const TextStyle(
+        color: Colors.black,
+        fontSize: 60,
+        fontWeight: FontWeight.bold,
+      ),
+      this.unitOfMeasurement = 'Km/Hr',
+      this.unitOfMeasurementTextStyle = const TextStyle(
+        color: Colors.black,
+        fontSize: 30,
+        fontWeight: FontWeight.w600,
+      ),
+      this.alertSpeedArray = const [],
+      this.alertColorArray = const [],
+      this.minSpeed = 0,
+      this.maxSpeed = 120,
+      this.minMaxTextStyle = const TextStyle(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+      this.gaugeWidth = 10,
+      this.baseGaugeColor = Colors.transparent,
+      this.inactiveGaugeColor = Colors.black87,
+      this.activeGaugeColor = Colors.green,
+      this.innerCirclePadding = 30,
+      this.divisionCircleColors = Colors.black,
+      this.subDivisionCircleColors = Colors.black,
+      this.duration = const Duration(milliseconds: 400),
+      this.fractionDigits = 0,
+      Key? key})
+      : super(key: key);
 
   @override
   _SpeedometerViewState createState() => _SpeedometerViewState();
@@ -174,7 +174,6 @@ class _SpeedometerPainter extends CustomPainter {
 
     //Draw active gauge view
     if (alertSpeedArray.isNotEmpty)
-      // ignore: curly_braces_in_flow_control_structures
       for (int i = 0; alertSpeedArray.length > i; i++) {
         if (i == 0 && speed <= alertSpeedArray[i]) {
           paint.color = activeGaugeColor;
