@@ -21,7 +21,7 @@ class MyThemes {
       ),
       headline2: TextStyle(
         color: Colors.white,
-        fontSize: 30,
+        fontSize: 25,
       ),
       bodyText1: TextStyle(
         color: Colors.white,
@@ -37,7 +37,7 @@ class MyThemes {
       ),
     ),
     iconTheme: IconThemeData(
-      color: Colors.purple.shade200,
+      color: Colors.white,
       opacity: 0.8,
     ),
   );
@@ -52,7 +52,7 @@ class MyThemes {
       ),
       headline2: TextStyle(
         color: Colors.black,
-        fontSize: 30,
+        fontSize: 25,
       ),
       bodyText1: TextStyle(
         color: Colors.black,
@@ -68,7 +68,7 @@ class MyThemes {
       ),
     ),
     iconTheme: const IconThemeData(
-      color: Colors.red,
+      color: Colors.black,
       opacity: 0.8,
     ),
   );
