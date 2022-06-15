@@ -4,7 +4,6 @@ import '../widget/circular_gauge.dart';
 import '../widget/speedgauge.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
-import 'package:bluez/bluez.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -15,7 +14,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final _channel = WebSocketChannel.connect(
-    Uri.parse('wss://miniproject-msrit.herokuapp.com/ws2'),
+    Uri.parse('ws://192.168.0.9:8000/ws3'),
   );
   @override
   void dispose() {
@@ -26,24 +25,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaquery = MediaQuery.of(context);
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: Theme.of(context).iconTheme,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const Icon(
-          Icons.arrow_back,
-          color: Colors.green,
-          size: 50,
-        ),
-        actions: const [
-          Icon(
-            Icons.arrow_forward,
-            color: Colors.green,
-            size: 50,
-          ),
-          // ChangeThemeButtonWidget(),
-        ],
+        // leading: const Icon(
+        //   Icons.arrow_back,
+        //   color: Colors.green,
+        //   size: 50,
+        // ),
+        // actions: const [
+        //   Icon(
+        //     Icons.arrow_forward,
+        //     color: Colors.green,
+        //     size: 50,
+        //   ),
+        //   // ChangeThemeButtonWidget(),
+        // ],
       ),
       body: StreamBuilder(
           stream: _channel.stream,
@@ -54,11 +54,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               return Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Icon(
+                        Icons.arrow_back,
+                        color:
+                            response['mode'] == 1 ? Colors.green : Colors.grey,
+                        size: 45,
+                      ),
                       CircularGauge(
-                        value: 80,
+                        value: response['battery_percentage'] * 0.4,
                       ),
                       SizedBox(
                         width: (mediaquery.size.width) * 0.55,
@@ -81,7 +87,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             fontSize:
                                 Theme.of(context).textTheme.headline1?.fontSize,
                           ),
-                          speed: 30,
+                          speed: (response['mode'] == 4)
+                              ? response['mode'].toDouble()
+                              : (response['speedometer'] * 0.3).toDouble(),
                           minSpeed: 0,
                           maxSpeed: 120,
                           alertSpeedArray: const [
@@ -116,7 +124,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 bottom: 10,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: response['mode'] == 4
+                                    ? Colors.red
+                                    : Colors.grey,
                                 border: Border.all(
                                     color: Theme.of(context).iconTheme.color!),
                               ),
@@ -134,7 +144,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 bottom: 10,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.amber,
+                                color: response['mode'] == 8
+                                    ? Colors.amber
+                                    : Colors.grey,
                                 border: Border.all(
                                     color: Theme.of(context).iconTheme.color!),
                               ),
@@ -149,9 +161,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Container(
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: (response['mode'] != 4 &&
+                                        response['mode'] != 8)
+                                    ? Colors.green
+                                    : Colors.grey,
                                 border: Border.all(
-                                    color: Theme.of(context).iconTheme.color!),
+                                  color: Theme.of(context).iconTheme.color!,
+                                ),
                               ),
                               child: const Text(
                                 'D',
@@ -164,20 +180,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ],
                         ),
                       ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color:
+                            response['mode'] == 2 ? Colors.green : Colors.grey,
+                        size: 45,
+                      ),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.battery_alert_outlined,
-                        color: Colors.red,
+                        color:
+                            response['faults'] > 200 ? Colors.red : Colors.grey,
                         size: 40,
                       ),
-                      const Icon(
+                      Icon(
                         Icons.battery_2_bar,
-                        color: Colors.red,
+                        color: response['battery_percentage'] < 20
+                            ? Colors.red
+                            : Colors.grey,
                         size: 40,
                       ),
                       Text(
@@ -185,7 +210,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       Text(
-                        '40 Km',
+                        response['battery_percentage'] < 20
+                            ? '10 Km'
+                            : response['battery_percentage'] < 40
+                                ? '20 Km'
+                                : '50 Km',
                         style: Theme.of(context).textTheme.bodyText2,
                       ),
                       Text(
@@ -196,20 +225,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         '100 Kms',
                         style: Theme.of(context).textTheme.bodyText2,
                       ),
-                      IconButton(
-                          onPressed: () async {
-                            var client = BlueZClient();
-                            client.adapterAdded
-                                .listen((adapter) => onAdapterAdded(adapter));
-                            client.adapterRemoved
-                                .listen((adapter) => onAdapterRemoved(adapter));
-                            client.deviceAdded
-                                .listen((device) => onDeviceAdded(device));
-                            client.deviceRemoved
-                                .listen((device) => onDeviceRemoved(device));
-                            await client.connect();
-                          },
-                          icon: const Icon(Icons.bluetooth)),
                       ChangeThemeButtonWidget(),
                     ],
                   ),
@@ -223,96 +238,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
             );
           }),
     );
-  }
-}
-
-void onAdapterAdded(BlueZAdapter adapter) {
-  print('Adapter [${adapter.address}] ${_getAdapterProperties(adapter, [
-        'Alias',
-        'Class',
-        'Discoverable',
-        'Discovering',
-        'Pairable',
-        'Powered',
-        'UUIDs'
-      ])}');
-  adapter.propertiesChanged
-      .listen((properties) => onAdapterPropertiesChanged(adapter, properties));
-}
-
-void onAdapterPropertiesChanged(BlueZAdapter adapter, List<String> properties) {
-  print(
-      'Adapter [${adapter.address}] ${_getAdapterProperties(adapter, properties)}');
-}
-
-void onAdapterRemoved(BlueZAdapter adapter) {
-  print('Adapter [${adapter.address}] (removed)');
-}
-
-String _getAdapterProperties(BlueZAdapter adapter, List<String> properties) {
-  return properties
-      .map((property) => '$property=${_getAdapterProperty(adapter, property)}')
-      .join(', ');
-}
-
-String _getAdapterProperty(BlueZAdapter adapter, String property) {
-  switch (property) {
-    case 'Alias':
-      return adapter.alias;
-    case 'Class':
-      return adapter.deviceClass.toString();
-    case 'Discovering':
-      return adapter.discovering.toString();
-    case 'Discoverable':
-      return adapter.discoverable.toString();
-    case 'Pairable':
-      return adapter.pairable.toString();
-    case 'Powered':
-      return adapter.powered.toString();
-    case 'UUIDs':
-      return adapter.uuids.join(',');
-    default:
-      return '?';
-  }
-}
-
-void onDeviceAdded(BlueZDevice device) {
-  print('Device [${device.address}] ${_getDeviceProperties(device, [
-        'Alias',
-        'Connected',
-        'Name',
-        'RSSI'
-      ])}');
-  device.propertiesChanged
-      .listen((properties) => onDevicePropertiesChanged(device, properties));
-}
-
-void onDevicePropertiesChanged(BlueZDevice device, List<String> properties) {
-  print(
-      'Device [${device.address}] ${_getDeviceProperties(device, properties)}');
-}
-
-void onDeviceRemoved(BlueZDevice device) {
-  print('Device [${device.address}] (removed)');
-}
-
-String _getDeviceProperties(BlueZDevice device, List<String> properties) {
-  return properties
-      .map((property) => '$property=${_getDeviceProperty(device, property)}')
-      .join(', ');
-}
-
-String _getDeviceProperty(BlueZDevice device, String property) {
-  switch (property) {
-    case 'Alias':
-      return device.alias;
-    case 'Connected':
-      return device.connected.toString();
-    case 'Name':
-      return device.name;
-    case 'RSSI':
-      return device.rssi.toString();
-    default:
-      return '?';
   }
 }
