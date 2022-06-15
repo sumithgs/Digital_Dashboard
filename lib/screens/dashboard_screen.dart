@@ -14,7 +14,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final _channel = WebSocketChannel.connect(
-    Uri.parse('ws://192.168.0.9:8000/ws3'),
+    Uri.parse('ws://192.168.83.230:8000/ws3'),
   );
   @override
   void dispose() {
@@ -64,10 +64,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         size: 45,
                       ),
                       CircularGauge(
-                        value: response['battery_percentage'] * 0.4,
+                        value: response['battery_percentage'] * 0.3,
                       ),
                       SizedBox(
-                        width: (mediaquery.size.width) * 0.55,
+                        width: (mediaquery.size.width) * 0.5,
                         height: (mediaquery.size.height) * 0.7,
                         child: SpeedometerView(
                           unitOfMeasurementTextStyle: TextStyle(
@@ -89,7 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           speed: (response['mode'] == 4)
                               ? response['mode'].toDouble()
-                              : (response['speedometer'] * 0.3).toDouble(),
+                              : (response['speedometer'] * 0.4).toDouble(),
                           minSpeed: 0,
                           maxSpeed: 120,
                           alertSpeedArray: const [
