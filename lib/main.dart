@@ -2,13 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:hel/provider/theme_provider.dart';
 import 'package:hel/screens/dashboard_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _channel = WebSocketChannel.connect(
+    Uri.parse('ws://192.168.0.9:8000/ws3'),
+  );
+  @override
+  void dispose() {
+    _channel.sink.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +34,25 @@ class MyApp extends StatelessWidget {
         final themeProvider = Provider.of<ThemeProvider>(context);
         return MaterialApp(
           theme: MyThemes.lightTheme,
-          home: const DashboardScreen(),
+          home: StreamBuilder(
+              stream: _channel.stream,
+              builder: (context, snapshot) {
+                if (snapshot.data != null) {
+                  final response = jsonDecode(snapshot.data.toString());
+                  return DashboardScreen(
+                    speed: response['speedometer'].toDouble(),
+                    battery: response['battery_percentage'],
+                    faults: response['faults'],
+                    mode: response['mode'],
+                  );
+                }
+
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                );
+              }),
           themeMode: themeProvider.themeMode,
           darkTheme: MyThemes.darkTheme,
           debugShowCheckedModeBanner: false,

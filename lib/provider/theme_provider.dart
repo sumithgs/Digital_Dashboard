@@ -36,7 +36,7 @@ class MyThemes {
         fontSize: 20,
       ),
     ),
-    iconTheme: IconThemeData(
+    iconTheme: const IconThemeData(
       color: Colors.white,
       opacity: 0.8,
     ),
