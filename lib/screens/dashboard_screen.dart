@@ -49,7 +49,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 value: widget.battery * 0.3,
               ),
               SizedBox(
-                width: (mediaquery.size.width) * 0.6,
+                width: (mediaquery.size.width) * 0.5,
                 height: (mediaquery.size.height) * 0.7,
                 child: SpeedometerView(
                   unitOfMeasurementTextStyle: TextStyle(
