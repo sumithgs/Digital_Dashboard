@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hel/provider/theme_provider.dart';
 import 'package:hel/screens/dashboard_screen.dart';
+import 'package:hel/screens/drawer_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
@@ -18,7 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _channel = WebSocketChannel.connect(
-    Uri.parse('ws://192.168.83.230:8000/ws3'),
+    Uri.parse('ws://192.168.125.230:8000/ws3'),
   );
   @override
   void dispose() {
@@ -34,6 +35,9 @@ class _MyAppState extends State<MyApp> {
         final themeProvider = Provider.of<ThemeProvider>(context);
         return MaterialApp(
           theme: MyThemes.lightTheme,
+          routes: {
+            DrawerScreen.routeName: (ctx) => const DrawerScreen(),
+          },
           home: StreamBuilder(
               stream: _channel.stream,
               builder: (context, snapshot) {
