@@ -1,5 +1,7 @@
 # Digital dashboard and App for Electric Vehicle
 
+## Click on the Image for detailed explanation
+
 [![IMAGE ALT TEXT](Screenshots/dash_dark.jpg)](https://www.youtube.com/watch?v=A4i5BcnVAHY "Digital Dashboard and App for EV - RIT - Final Year Project")
 
 ## Objectives
