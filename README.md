@@ -32,6 +32,10 @@
 
 All parameters such as Speedometer, Battery Percentage and fault code were displayed on Physical Dashboard.
 
+## Link for the app code
+
+https://github.com/YashBagri4412/ev_app/tree/ui_app
+
 ## Pictures of the Physical Dashboard
 
 ![](Screenshots/dash_light.jpg)
