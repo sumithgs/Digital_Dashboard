@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _channel = WebSocketChannel.connect(
-    Uri.parse('//put ur ip'),
+    Uri.parse('//put ur'),
   );
   @override
   void dispose() {

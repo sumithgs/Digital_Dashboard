@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hel/screens/drawer_screen.dart';
 import '../widget/change_theme_button.dart';
 import '../widget/circular_gauge.dart';
 import '../widget/speedgauge.dart';
@@ -28,14 +29,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         elevation: 0,
         leading: Icon(
           Icons.arrow_back,
-          color: widget.mode == 1 ? Colors.green : Colors.grey,
-          size: 50,
+          color: widget.mode == 1 ? Colors.orange : Colors.grey,
+          size: 60,
         ),
         actions: [
           Icon(
             Icons.arrow_forward,
-            color: widget.mode == 2 ? Colors.green : Colors.grey,
-            size: 50,
+            color: widget.mode == 2 ? Colors.orange : Colors.grey,
+            size: 60,
           ),
         ],
       ),
@@ -46,11 +47,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircularGauge(
-                value: widget.battery * 0.3,
+                value: widget.battery > 100 ? 100 : widget.battery,
               ),
               SizedBox(
                 width: (mediaquery.size.width) * 0.5,
-                height: (mediaquery.size.height) * 0.7,
+                height: (mediaquery.size.height) * 0.7, //0.7
                 child: SpeedometerView(
                   unitOfMeasurementTextStyle: TextStyle(
                     color: Theme.of(context).textTheme.headline2?.color,
@@ -67,8 +68,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     fontSize: Theme.of(context).textTheme.headline1?.fontSize,
                   ),
                   speed: (widget.mode == 4)
-                      ? widget.mode.toDouble()
-                      : (widget.speed * 0.4),
+                      ? widget.speed <= 128
+                          ? 0
+                          : widget.speed > 128 && widget.speed <= 160
+                              ? 1
+                              : widget.speed > 160 && widget.speed <= 192
+                                  ? 2
+                                  : widget.speed > 192 && widget.speed < 224
+                                      ? 3
+                                      : widget.speed > 224
+                                          ? 4
+                                          : 0
+                      : widget.mode == 8
+                          ? 0
+                          : widget.speed < 128
+                              ? 0
+                              : (widget.speed - 128),
                   minSpeed: 0,
                   maxSpeed: 120,
                   alertSpeedArray: const [
@@ -160,14 +175,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              IconButton(
+                onPressed: () => showModalBottomSheet(
+                  context: context,
+                  builder: (context) => const DrawerScreen(),
+                ),
+                icon: const Icon(Icons.menu),
+              ),
               Icon(
                 Icons.battery_alert_outlined,
-                color: widget.faults > 200 ? Colors.red : Colors.grey,
+                color: widget.faults == 47 ? Colors.red : Colors.grey,
                 size: 40,
               ),
               Icon(
                 Icons.battery_2_bar,
-                color: widget.battery < 20 ? Colors.red : Colors.grey,
+                color: widget.battery < 15 ? Colors.red : Colors.grey,
                 size: 40,
               ),
               Text(
@@ -175,11 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               Text(
-                widget.battery < 20
-                    ? '10 Km'
-                    : widget.battery < 40
-                        ? '20 Km'
-                        : '50 Km',
+                "${(widget.battery > 100 ? (100 * 1.2).ceil() : (widget.battery * 1.2).ceil()).toString()}Km",
                 style: Theme.of(context).textTheme.bodyText2,
               ),
               Text(
