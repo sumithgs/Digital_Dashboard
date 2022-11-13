@@ -25,7 +25,7 @@
 1. ECU is connected to the Raspberry Pi board that inflates the GUI on the display.
 2. Same vehicle data can be streamed to the app via a Bluetooth on the Raspberry Pi.
 3. To design GUI for the dashboard, we used Flutter software because of its compatibility with Raspberry Pi.
-4. If Bluetooth is connection, the user is required to switch it on to view the available device to which the user can connect.
+4. If Bluetooth connection is off, the user is required to switch it on to view the available device to which the user can connect.
 5. If the Bluetooth connection is successful, then the user is navigated to the main screen, where the user can monitor the status of the vehicle which is being received from the Bluetooth stream via Raspberry Pi.
 
 ## Results
